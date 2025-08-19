@@ -13,6 +13,10 @@ async def main():
     pygame.display.set_caption("Minesweeper - Choose Difficulty & Mode")
     font = pygame.font.Font(None, 50)
 
+    # Game state variables
+    current_difficulty = None
+    current_use_solver = None
+
     # Define button rectangles
     button_easy = pygame.Rect(250, 200, 300, 60)
     button_medium = pygame.Rect(250, 300, 300, 60)
@@ -84,25 +88,41 @@ async def main():
                         return False
             await asyncio.sleep(0)
 
-    # First: choose difficulty → (rows, cols, mines)
-    difficulty_result = await difficulty_menu()
-    if difficulty_result is None:
-        return
+    # Main game loop
+    while True:
 
-    size_rows, size_cols, minesNum = difficulty_result
+        if current_difficulty is None:
+            difficulty_result = await difficulty_menu()
+            if difficulty_result is None:
+                break
+            current_difficulty = difficulty_result
 
-    # Then: choose mode → use_solver True/False
-    use_solver = await mode_menu()
-    if use_solver is None:
-        return
+        if current_use_solver is None:
+            use_solver = await mode_menu()
+            if use_solver is None:
+                break
+            current_use_solver = use_solver
 
-    # Set game config
-    size = (size_rows, size_cols)
-    board = Board(size, minesNum)
-    game = Game(board, screenSize)
+        # Create new game with current settings
+        size_rows, size_cols, minesNum = current_difficulty
+        size = (size_rows, size_cols)
+        board = Board(size, minesNum)
+        game = Game(board, screenSize)
 
-    # Start game
-    await game.run(use_solver=use_solver)
+        result = await game.run(use_solver=current_use_solver)
+
+        # Handle the result
+        if result == 'quit':
+            break
+        elif result == 'menu':
+            # Return to main menu so reset both difficulty and mode
+            current_difficulty = None
+            current_use_solver = None
+        elif result == 'restart':
+            # Restart with same settings
+            pass
+
+    pygame.quit()
 
 
 if __name__ == "__main__":
