@@ -1,15 +1,13 @@
 import pygame
-from time import sleep
+import asyncio
 import os
 from solver import Solver
 
-# Initialize Pygame
 pygame.init()
 
 
 class Game:
     def __init__(self, board, screenSize):
-        # Initialize game properties
         self.images = None
         self.screen = None
         self.board = board
@@ -23,17 +21,18 @@ class Game:
         self.loadImages()
         self.bombsLeft = self.board.getMinesNum()
 
-    def run(self, use_solver=False, solver_delay=0.5):
-        # Set up the Pygame screen
+    async def run(self, use_solver=False, solver_delay=0.5):
         self.screen = pygame.display.set_mode(self.screenSize)
         pygame.display.set_caption("Minesweeper")
         running = True
         solver = Solver(self.board) if use_solver else None
 
         clock = pygame.time.Clock()
+        last_solver_time = 0
 
-        # Main game loop
         while running:
+            current_time = pygame.time.get_ticks()
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -41,49 +40,48 @@ class Game:
                     pos = pygame.mouse.get_pos()
                     rightClick = pygame.mouse.get_pressed()[2]
                     self.handleClick(pos, rightClick)
-                # Allow manual first click even in AI mode
                 elif event.type == pygame.MOUSEBUTTONDOWN and use_solver and self.board.first:
                     pos = pygame.mouse.get_pos()
                     rightClick = pygame.mouse.get_pressed()[2]
                     self.handleClick(pos, rightClick)
 
-            # If using the solver and the game is not over, let the solver make a move
-            if use_solver and solver and not self.board.getWon() and not self.board.getLost() and not self.board.first:
+            # AI solver with timing
+            if (use_solver and solver and not self.board.getWon() and
+                    not self.board.getLost() and not self.board.first and
+                    current_time - last_solver_time > solver_delay * 1000):
+
                 moves_made = solver.move()
                 if moves_made:
-                    self.draw(self.board.getLost())
-                    pygame.display.flip()
-                    sleep(solver_delay)
+                    last_solver_time = current_time
 
-            # Draw the board only if game is still active
-            if not self.board.getLost() and not self.board.getWon():
+            # Check for game end conditions first
+            if self.board.getLost():
+                self.playLoseSound()
+                self.draw(True)
+                self.drawUI()
+                self.displayLoseMessage()
+                pygame.display.flip()
+                await asyncio.sleep(3)
+                running = False
+            elif self.board.getWon():
+                self.playWinSound()
+                self.draw(False)
+                self.drawUI()
+                self.displayWinMessage()
+                pygame.display.flip()
+                await asyncio.sleep(3)
+                running = False
+            else:
+                # Draw the board only if game is still active
                 self.draw(self.board.getLost())
                 self.drawUI()
                 pygame.display.flip()
 
-            # Check for game end conditions
-            if self.board.getLost():
-                self.playLoseSound()
-                self.draw(True)  # Draw with lost=True to show all bombs
-                self.drawUI()
-                self.displayLoseMessage()
-                pygame.display.flip()
-                sleep(3)
-                running = False
-            elif self.board.getWon():
-                self.playWinSound()
-                self.displayWinMessage()
-                sleep(3)
-                running = False
-
-            clock.tick(60)  # Limit to 60 FPS
-
-        # Quit Pygame when the game loop exits
-        pygame.quit()
+            clock.tick(60)
+            await asyncio.sleep(0)  # Essential for pygbag
 
     def draw(self, lost):
-        # Draw the game board
-        self.screen.fill((192, 192, 192))  # Light gray background
+        self.screen.fill((192, 192, 192))
         topLeft = (0, 0)
         for row in range(self.board.getSize()[0]):
             for col in range(self.board.getSize()[1]):
@@ -94,13 +92,10 @@ class Game:
             topLeft = 0, topLeft[1] + self.pieceSize[1]
 
     def drawUI(self):
-        # Draw UI elements like bomb counter
         bombs_text = self.font.render(f"Bombs: {self.board.getMinesNum()}", True, (0, 0, 0))
-        # Position at top of screen with some padding
         self.screen.blit(bombs_text, (10, 10))
 
     def loadImages(self):
-        # Load and scale images for different game pieces
         self.images = {}
         for fileName in os.listdir("images"):
             if not fileName.endswith(".png"):
@@ -110,7 +105,6 @@ class Game:
             self.images[fileName.split(".")[0]] = image
 
     def getImage(self, piece, lost):
-        # Get the appropriate image for a given game piece
         if piece.getClicked():
             string = "bomb-at-clicked-block" if piece.getHasBomb() else str(piece.getNumAround())
         elif piece.getFlagged() and not lost:
@@ -126,14 +120,12 @@ class Game:
         return self.images[string]
 
     def handleClick(self, pos, rightClick):
-        # Handle mouse clicks on the game board(pieces)
-        if pos[1] < 0 or pos[0] < 0:  # Prevent negative indices
+        if pos[1] < 0 or pos[0] < 0:
             return
 
         row = pos[1] // self.pieceSize[1]
         col = pos[0] // self.pieceSize[0]
 
-        # Check bounds
         if row >= self.board.getSize()[0] or col >= self.board.getSize()[1]:
             return
 
@@ -141,7 +133,6 @@ class Game:
         self.board.handleClick(piece, rightClick)
 
     def displayWinMessage(self):
-        # Display a message on the screen after winning
         overlay = pygame.Surface(self.screenSize)
         overlay.set_alpha(128)
         overlay.fill((0, 0, 0))
@@ -151,10 +142,8 @@ class Game:
         text = font.render("You Won!", True, (0, 255, 0))
         text_rect = text.get_rect(center=(self.screenSize[0] // 2, self.screenSize[1] // 2))
         self.screen.blit(text, text_rect)
-        pygame.display.flip()
 
     def displayLoseMessage(self):
-        # Display a message on the screen after losing
         overlay = pygame.Surface(self.screenSize)
         overlay.set_alpha(128)
         overlay.fill((0, 0, 0))
@@ -164,14 +153,17 @@ class Game:
         text = font.render("Game Over!", True, (255, 0, 0))
         text_rect = text.get_rect(center=(self.screenSize[0] // 2, self.screenSize[1] // 2))
         self.screen.blit(text, text_rect)
-        pygame.display.flip()
 
     def playWinSound(self):
-        # Play win sound
-        sound = pygame.mixer.Sound("sounds/win.wav")
-        sound.play()
+        try:
+            sound = pygame.mixer.Sound("sounds/win.wav")
+            sound.play()
+        except:
+            pass
 
     def playLoseSound(self):
-        # Play lose sound
-        sound = pygame.mixer.Sound("sounds/lose.wav")
-        sound.play()
+        try:
+            sound = pygame.mixer.Sound("sounds/lose.wav")
+            sound.play()
+        except:
+            pass

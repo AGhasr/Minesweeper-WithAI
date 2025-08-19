@@ -1,9 +1,10 @@
 import pygame
+import asyncio
 from game import Game
 from board import Board
 
 
-def main():
+async def main():
     pygame.init()
 
     # Set screen size for menu and game
@@ -55,12 +56,11 @@ def main():
 
         pygame.display.flip()
 
-    def difficulty_menu():
+    async def difficulty_menu():
         while True:
             draw_difficulty_menu()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
                     return None
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if button_easy.collidepoint(event.pos):
@@ -69,29 +69,30 @@ def main():
                         return 16, 16, 40
                     elif button_hard.collidepoint(event.pos):
                         return 20, 20, 80
+            await asyncio.sleep(0)
 
-    def mode_menu():
+    async def mode_menu():
         while True:
             draw_mode_menu()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    pygame.quit()
                     return None
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if button_ai.collidepoint(event.pos):
                         return True
                     elif button_manual.collidepoint(event.pos):
                         return False
+            await asyncio.sleep(0)
 
     # First: choose difficulty → (rows, cols, mines)
-    difficulty_result = difficulty_menu()
+    difficulty_result = await difficulty_menu()
     if difficulty_result is None:
         return
 
     size_rows, size_cols, minesNum = difficulty_result
 
     # Then: choose mode → use_solver True/False
-    use_solver = mode_menu()
+    use_solver = await mode_menu()
     if use_solver is None:
         return
 
@@ -101,9 +102,8 @@ def main():
     game = Game(board, screenSize)
 
     # Start game
-    game.run(use_solver=use_solver)
-    pygame.quit()
+    await game.run(use_solver=use_solver)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
