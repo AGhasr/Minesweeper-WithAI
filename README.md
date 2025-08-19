@@ -15,9 +15,7 @@ A Minesweeper game built with Pygame featuring an optional AI solver that can pl
 
 ## ⚠️ Important Notes about the AI Solver
 
-- The AI uses basic Minesweeper logic to flag bombs and reveal safe tiles.
-- Sometimes the AI may get stuck if it cannot deduce a safe move, just like a human might.
-- In that case, the AI will stop making moves, and the game will wait for your input.
+- The solver will make random guesses when no logical moves are available.
 
 ---
 
@@ -32,6 +30,37 @@ Install Pygame using:
 pip install pygame
 ```
 
+**Note**: On macOS and some Linux systems, you may need to use `python3` instead of `python`:
+
+```bash
+python3 -m pip install pygame
+```
+
+---
+
+## 🗂️ Required Assets
+
+Make sure you have these folders and files in your project directory:
+
+```text
+minesweeper/
+├── images/
+│   ├── empty-block.png
+│   ├── flag.png
+│   ├── bomb-at-clicked-block.png
+│   ├── unclicked-bomb.png
+│   ├── wrong-flag.png
+│   ├── 0.png
+│   ├── 1.png
+│   ├── 2.png
+│   ├── ... (up to 8.png)
+├── sounds/
+│   ├── win.wav           # Win sound effect
+│   ├── lose.wav          # Lose sound effect
+```
+
+---
+
 ## ▶️ Run the Game
 
 Run the program from your terminal:
@@ -40,6 +69,13 @@ Run the program from your terminal:
 python main.py
 ```
 
+**For macOS/Linux users:**
+```bash
+python3 main.py
+```
+
+---
+
 ## 🏃 Run with Shell Script
 
 Alternatively, run the game with:
@@ -47,14 +83,29 @@ Alternatively, run the game with:
 ```bash
 ./run.sh
 ```
-🗂️ Project Structure
+
+---
+
+## 🗂️ Project Structure
+
 ```text
 minesweeper/
-├── main.py           # Entry point with interface and game launch
-├── game.py           # Game logic and Pygame loop
-├── board.py          # Board and piece classes
-├── solver.py         # AI solver logic
-├── piece.py          # Game piece class
-├── images/           # Images used in the game (flags, bombs, numbers)
-├── sounds/           # The sounds used in the game
+├── main.py           # Entry point with menu interface and game launch
+├── game.py           # Game logic, Pygame rendering, and main game loop
+├── board.py          # Board management and game state logic
+├── piece.py          # Individual game piece class
+├── solver.py         # Enhanced AI solver with advanced logic
+├── images/           # PNG images for all game pieces (required)
+├── win.wav           # Win sound effect (required)
+├── lose.wav          # Lose sound effect (optional)
 └── README.md         # This file
+```
+
+---
+
+## 🎯 Game Features
+
+- **Three Difficulty Levels**: Easy (10x10, 10 mines), Medium (16x16, 40 mines), Hard (20x20, 80 mines)
+- **Manual or AI Play**: Choose to play yourself or watch the AI solve
+- **Smart AI Solver**: Think logically and makes random guesses when needed
+- **Visual Feedback**: Bomb counter and win/lose messages
