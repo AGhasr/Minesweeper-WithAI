@@ -12,6 +12,7 @@ class Board:
         self.numNonBombs = size[0] * size[1] - minesNum
         self.size = size
         self.minesNum = minesNum
+        self.originalMinesNum = minesNum  # Keep track of original number for display
 
         self.setBoard()
         self.first = True
@@ -20,11 +21,11 @@ class Board:
         # Create an empty game board
         self.board = []
         for row in range(self.size[0]):
-            row = []
+            board_row = []
             for col in range(self.size[1]):
                 piece = Piece()
-                row.append(piece)
-            self.board.append(row)
+                board_row.append(piece)
+            self.board.append(board_row)
 
     def setNeighbors(self):
         # Set the neighbors for each piece on the board
@@ -59,10 +60,10 @@ class Board:
             self.initializeBoard(piece)
             self.first = False
 
-        if self.lost:
+        if self.lost or self.won:
             return
 
-        # If the piece was already open, or we wanted to open while it's flagged, we don't do anything
+        # If the piece was already clicked, or we wanted to open while it's flagged, we don't do anything
         if piece.getClicked() or (not flag and piece.getFlagged()):
             return
 
@@ -72,19 +73,21 @@ class Board:
             else:
                 self.minesNum -= 1
             piece.toggleFlag()
-
             return
+
         piece.click()
 
         if piece.getHasBomb():
             self.lost = True
             return
+
         self.numClicked += 1
-        if piece.getNumAround() != 0:
-            return
-        for neighbor in piece.getNeighbors():
-            if (not neighbor.getHasBomb()) and (not neighbor.getClicked()):
-                self.handleClick(neighbor, False)
+
+        # Auto-reveal neighboring empty cells
+        if piece.getNumAround() == 0:
+            for neighbor in piece.getNeighbors():
+                if (not neighbor.getHasBomb()) and (not neighbor.getClicked()):
+                    self.handleClick(neighbor, False)
 
     def getWon(self):
         # Check if the game is won
@@ -95,27 +98,26 @@ class Board:
     def getLost(self):
         return self.lost
 
-    def initializeBoard(self, piece):
-        # Initialize the game board with mines
-        minesCount = self.minesNum
-        while minesCount > 0:
+    def initializeBoard(self, clickedPiece):
+        # Initialize the game board with mines, ensuring first click is safe
+        minesCount = self.originalMinesNum
+        placedMines = 0
+        attempts = 0
+        max_attempts = self.size[0] * self.size[1] * 10  # Prevent infinite loop
+
+        while placedMines < minesCount and attempts < max_attempts:
             random_row = randint(0, self.size[0] - 1)
             random_col = randint(0, self.size[1] - 1)
-            if self.board[random_row][random_col] != piece:
-                self.board[random_row][random_col].hasBomb = True
-                minesCount -= 1
+            potential_piece = self.board[random_row][random_col]
+
+            # Don't place mine on clicked piece or if already has mine
+            if potential_piece != clickedPiece and not potential_piece.getHasBomb():
+                potential_piece.hasBomb = True
+                placedMines += 1
+
+            attempts += 1
 
         self.setNeighbors()
-
-        # for row in range(self.size[0]):
-        #     for col in range(self.size[1]):
-        #         if self.getPiece((row, col)) == piece:
-        #             self.numNonBombs += 1
-        #             continue
-        #         hasBomb = random() < self.mines
-        #         if not hasBomb:
-        #             self.numNonBombs += 1
-        #         self.getPiece((row, col)).hasBomb = hasBomb
 
     def getBoard(self):
         return self.board

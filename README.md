@@ -37,7 +37,7 @@ pip install pygame
 Run the program from your terminal:
 
 ```bash
-python gravity_simulator.py
+python main.py
 ```
 
 ## 🏃 Run with Shell Script
