@@ -1,4 +1,8 @@
-# Build artifacts
+# Ignore everything in build except web output
 build/*
 !build/web/
 !build/web/*
+
+# Ignore caches and IDE files
+__pycache__/
+.idea/
