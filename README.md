@@ -2,6 +2,8 @@
 
 A Minesweeper game built with Pygame featuring an optional AI solver that can play the game for you!
 
+## 🌟 **[Live Demo](https://aghasr.github.io/Pygame-Minesweeper-WithAI/)**
+
 ---
 
 ## 🎮 How to Play
@@ -93,12 +95,11 @@ minesweeper/
 ├── main.py           # Entry point with menu interface and game launch
 ├── game.py           # Game logic, Pygame rendering, and main game loop
 ├── board.py          # Board management and game state logic
-├── piece.py          # Individual game piece class
-├── solver.py         # Enhanced AI solver with advanced logic
-├── images/           # PNG images for all game pieces (required)
-├── win.wav           # Win sound effect (required)
-├── lose.wav          # Lose sound effect (optional)
-└── README.md         # This file
+├── piece.py          # Game piece class
+├── solver.py         # AI solver with advanced logic
+├── images/           # PNG images
+├── sounds/           # win and lose sound affects
+└── README.md         
 ```
 
 ---
