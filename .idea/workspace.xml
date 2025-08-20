@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a02f4b8d-7d89-45ab-9182-db0788311eb5" name="Changes" comment="" />
+    <list default="true" id="a02f4b8d-7d89-45ab-9182-db0788311eb5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/web/minesweeper.apk" beforeDir="false" afterPath="$PROJECT_DIR$/build/web/minesweeper.apk" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -36,7 +39,7 @@
     &quot;Python.main.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;gh-pages&quot;,
     &quot;last_opened_file_path&quot;: &quot;/Users/alighasr/Projects/PycharmProjects/pythonProject/Minesweeper&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -83,6 +86,12 @@
       <workItem from="1755596991100" duration="527000" />
       <workItem from="1755597614141" duration="5007000" />
       <workItem from="1755614356427" duration="4875000" />
+      <workItem from="1755624013158" duration="5982000" />
+      <workItem from="1755639500246" duration="11000" />
+      <workItem from="1755640858761" duration="38000" />
+      <workItem from="1755640957213" duration="1421000" />
+      <workItem from="1755679167022" duration="638000" />
+      <workItem from="1755680321289" duration="779000" />
     </task>
     <servers />
   </component>
