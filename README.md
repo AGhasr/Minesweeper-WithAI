@@ -2,7 +2,7 @@
 
 A Minesweeper game built with Pygame featuring an optional AI solver that can play the game for you!
 
-## 🌟 **[Live Demo](https://aghasr.github.io/Pygame-Minesweeper-WithAI/)**
+## 🌟 **[Live Demo](https://aghasr.github.io/Minesweeper-WithAI/)**
 
 ---
 
