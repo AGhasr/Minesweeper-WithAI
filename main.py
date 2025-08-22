@@ -72,7 +72,7 @@ async def main():
                     elif button_medium.collidepoint(event.pos):
                         return 16, 16, 40
                     elif button_hard.collidepoint(event.pos):
-                        return 20, 20, 80
+                        return 25, 25, 100
             await asyncio.sleep(0)
 
     async def mode_menu():

@@ -2,7 +2,7 @@
 
 A Minesweeper game built with Pygame featuring an optional AI solver that can play the game for you!
 
-## 🌟 **[Live Demo](https://aghasr.github.io/Pygame-Minesweeper-WithAI/)**
+## 🌟 **[Live Demo](https://aghasr.github.io/Minesweeper-WithAI/)**
 
 ---
 
@@ -106,7 +106,7 @@ minesweeper/
 
 ## 🎯 Game Features
 
-- **Three Difficulty Levels**: Easy (10x10, 10 mines), Medium (16x16, 40 mines), Hard (20x20, 80 mines)
+- **Three Difficulty Levels**: Easy (10x10, 10 mines), Medium (16x16, 40 mines), Hard (25x25, 100 mines)
 - **Manual or AI Play**: Choose to play yourself or watch the AI solve
 - **Smart AI Solver**: Think logically and makes random guesses when needed
 - **Visual Feedback**: Bomb counter and win/lose messages
